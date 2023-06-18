@@ -9,7 +9,7 @@ import (
 )
 
 func TestLinkParserUseNode(t *testing.T) {
-	parser := NewLinkParser()
+	parser := New()
 	textNode := &html.Node{
 		Type: html.TextNode,
 		Data: "This is my text",
@@ -35,7 +35,7 @@ func TestLinkParserUseNode(t *testing.T) {
 }
 
 func TestLinkParserUseReader(t *testing.T) {
-	parser := NewLinkParser()
+	parser := New()
 	file, _ := os.Open("mockdata/ex1.html")
 	defer file.Close()
 
@@ -54,7 +54,7 @@ func TestLinkParserUseReader(t *testing.T) {
 }
 
 func TestLinkParserUseHTMLFile(t *testing.T) {
-	parser := NewLinkParser()
+	parser := New()
 	err := parser.UseHTMLFile("mockdata/ex1.html")
 	if err != nil {
 		t.Fatal("Cannot UseHTMLFile")
@@ -69,7 +69,7 @@ func TestLinkParserUseHTMLFile(t *testing.T) {
 }
 
 func TestLinkParserParse(t *testing.T) {
-	parser := NewLinkParser()
+	parser := New()
 	parser.UseHTMLFile("mockdata/ex1.html")
 
 	expected := []Link{
