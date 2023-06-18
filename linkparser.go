@@ -1,7 +1,6 @@
 package linkparser
 
 import (
-	"encoding/json"
 	"errors"
 	"io"
 	"os"
@@ -21,10 +20,9 @@ type LinkParser interface {
 	UseReader(reader io.Reader) error
 	UseHTMLFile(path string) error
 	Parse() ([]Link, error)
-	Marshal() ([]byte, error)
 }
 
-func NewLinkParser() LinkParser {
+func New() LinkParser {
 	return &linkParser{}
 }
 
@@ -70,7 +68,6 @@ func (lp *linkParser) Parse() ([]Link, error) {
 	}
 
 	if node.DataAtom == atom.A {
-
 		link := Link{}
 
 		for _, attr := range lp.node.Attr {
@@ -90,7 +87,7 @@ func (lp *linkParser) Parse() ([]Link, error) {
 
 	} else if node.Type == html.ElementNode || node.Type == html.DocumentNode {
 		for child := node.FirstChild; child != nil; child = child.NextSibling {
-			cParser := NewLinkParser()
+			cParser := New()
 			cParser.UseNode(child)
 			cLinks, err := cParser.Parse()
 			if err != nil {
@@ -98,24 +95,9 @@ func (lp *linkParser) Parse() ([]Link, error) {
 			}
 			links = append(links, cLinks...)
 		}
-
 	}
 
 	return links, nil
-}
-
-func (lp *linkParser) Marshal() ([]byte, error) {
-	links, err := lp.Parse()
-	if err != nil {
-		return []byte{}, err
-	}
-
-	b, err := json.Marshal(links)
-	if err != nil {
-		return []byte{}, nil
-	}
-
-	return b, nil
 }
 
 func getText(node *html.Node) string {
